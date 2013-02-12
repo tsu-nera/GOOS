@@ -1,6 +1,8 @@
 package auctionsniper;
 
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,6 +31,9 @@ public class Main {
 	public static final String AUCTION_ID_FORMAT =
 			ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
 
+	public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
+	public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
+
 	private MainWindow ui;
 
 	public Main() throws Exception {
@@ -43,7 +48,8 @@ public class Main {
 	}
 
 	private void joinAuction(XMPPConnection connection,String itemId) throws XMPPException {
-		final Chat chat = connection.getChatManager().createChat(
+		disconnectWhenUICloses(connection);
+		Chat chat = connection.getChatManager().createChat(
 		auctionId(itemId, connection),
 		new MessageListener() {
 			public void processMessage(Chat aChat, Message message) {
@@ -55,7 +61,15 @@ public class Main {
 			}
 		});
 		this.notToBeGCd = chat;
-		chat.sendMessage(new Message());
+		chat.sendMessage(JOIN_COMMAND_FORMAT);
+	}
+
+	private void disconnectWhenUICloses(final XMPPConnection connection) {
+		ui.addWindowListener(new WindowAdapter() {
+			@Override public void windowClosed(WindowEvent e) {
+				connection.disconnect();
+			}
+		});
 	}
 
 	private static String auctionId(String itemId, XMPPConnection connection) {

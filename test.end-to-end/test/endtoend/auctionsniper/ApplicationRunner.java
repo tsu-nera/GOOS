@@ -15,6 +15,8 @@ import auctionsniper.ui.MainWindow;
 public class ApplicationRunner {
 	public static final String SNIPER_ID = "sniper";
 	public static final String SNIPER_PASSWORD = "sniper";
+	public static final String SNIPER_XMPP_ID = SNIPER_ID + "@" + XMPP_HOSTNAME + "/Auction";
+
 	private AuctionSniperDriver driver;
 
 	public void startBiddingIn(final FakeAuctionServer auction) {
@@ -41,5 +43,13 @@ public class ApplicationRunner {
 		if (driver != null) {
 			driver.dispose();
 		}
+	}
+
+	public void hasShoownSniperIsBidding() {
+		driver.showSniperStatus(MainWindow.STATUS_BIDDING);
+	}
+
+	public void showSniperHasLostAuction() {
+		driver.showSniperStatus(MainWindow.STATUS_LOST);
 	}
 }
