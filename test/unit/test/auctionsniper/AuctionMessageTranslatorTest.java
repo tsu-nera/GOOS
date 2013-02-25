@@ -14,10 +14,12 @@ import auctionsniper.AuctionMessageTranslator;
 @RunWith(JMock.class)
 public class AuctionMessageTranslatorTest {
   private final Mockery context = new Mockery();
-  private final AuctionEventListener listener = context.mock(AuctionEventListener.class);
+  private final AuctionEventListener listener =
+      context.mock(AuctionEventListener.class);
 
   public static final Chat UNUSED_CHAT = null;
-  private final AuctionMessageTranslator translator = new AuctionMessageTranslator();
+  private final AuctionMessageTranslator translator =
+      new AuctionMessageTranslator(listener);
 
 	@Test public void
 	notifiesAuctionClosedWhenCloseMessageRecieved() {
