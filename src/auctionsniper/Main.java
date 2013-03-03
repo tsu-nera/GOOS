@@ -18,7 +18,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import auctionsniper.ui.MainWindow;
 
-public class Main {
+public class Main implements AuctionEventListener {
 	@SuppressWarnings("unused") private Chat notToBeGCd;
 
 	private static final int ARG_HOSTNAME = 0;
@@ -49,19 +49,21 @@ public class Main {
 
 	private void joinAuction(XMPPConnection connection,String itemId) throws XMPPException {
 		disconnectWhenUICloses(connection);
+		
 		Chat chat = connection.getChatManager().createChat(
 		auctionId(itemId, connection),
-		new MessageListener() {
-			public void processMessage(Chat aChat, Message message) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						ui.showStatus(MainWindow.STATUS_LOST);
-					}
-				});
-			}
-		});
-		this.notToBeGCd = chat;
+		new AuctionMessageTranslator(this));
+//		new MessageListener() {
+//			public void processMessage(Chat aChat, Message message) {
+//				SwingUtilities.invokeLater(new Runnable() {
+//					public void run() {
+//						ui.showStatus(MainWindow.STATUS_LOST);
+//					}
+//				});
+//			}
+//		});
 		chat.sendMessage(JOIN_COMMAND_FORMAT);
+    this.notToBeGCd = chat;
 	}
 
 	private void disconnectWhenUICloses(final XMPPConnection connection) {
@@ -94,5 +96,13 @@ public class Main {
 
 		return connection;
 	}
+
+  public void auctionClosed() {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        ui.showStatus(MainWindow.STATUS_LOST);
+      }
+    });
+  }
 }
 

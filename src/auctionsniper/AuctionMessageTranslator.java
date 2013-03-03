@@ -6,10 +6,10 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
 
 public class AuctionMessageTranslator implements MessageListener {
-
   private final AuctionEventListener listener;
 
   public AuctionMessageTranslator(AuctionEventListener listener) {
+    //この処理は本にのってない。常識なのか？
     this.listener = listener;
   }
 
