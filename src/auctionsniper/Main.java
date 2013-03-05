@@ -53,15 +53,7 @@ public class Main implements AuctionEventListener {
 		Chat chat = connection.getChatManager().createChat(
 		auctionId(itemId, connection),
 		new AuctionMessageTranslator(this));
-//		new MessageListener() {
-//			public void processMessage(Chat aChat, Message message) {
-//				SwingUtilities.invokeLater(new Runnable() {
-//					public void run() {
-//						ui.showStatus(MainWindow.STATUS_LOST);
-//					}
-//				});
-//			}
-//		});
+
 		chat.sendMessage(JOIN_COMMAND_FORMAT);
     this.notToBeGCd = chat;
 	}
