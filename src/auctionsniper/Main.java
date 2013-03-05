@@ -49,7 +49,7 @@ public class Main implements AuctionEventListener {
 
 	private void joinAuction(XMPPConnection connection,String itemId) throws XMPPException {
 		disconnectWhenUICloses(connection);
-		
+
 		Chat chat = connection.getChatManager().createChat(
 		auctionId(itemId, connection),
 		new AuctionMessageTranslator(this));
@@ -103,6 +103,12 @@ public class Main implements AuctionEventListener {
         ui.showStatus(MainWindow.STATUS_LOST);
       }
     });
+  }
+
+  @Override
+  public void currentPrice(int price, int increment) {
+    // TODO 自動生成されたメソッド・スタブ
+
   }
 }
 

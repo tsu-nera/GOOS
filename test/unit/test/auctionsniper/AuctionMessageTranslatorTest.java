@@ -28,8 +28,23 @@ public class AuctionMessageTranslatorTest {
 	  }});
 
 	  Message message = new Message();
-	  message.setBody("SOLVersion: 1.1; Kvent; CLOSE;");
+	  message.setBody("SOLVersion: 1.1; Event: CLOSE;");
 
 	  translator.processMessage(UNUSED_CHAT, message);
 	}
+
+	@Test public void
+	notifiesBidDetailsWhenCurrentPriceMessageRecieved() {
+	  context.checking(new Expectations() {{
+	    exactly(1).of(listener).currentPrice(192,7);
+	  }});
+
+	  Message message = new Message();
+	  message.setBody(
+	      "SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;"
+	      );
+
+	  translator.processMessage(UNUSED_CHAT, message);
+	}
+
 }
