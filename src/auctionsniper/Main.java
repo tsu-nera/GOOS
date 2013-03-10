@@ -18,7 +18,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import auctionsniper.ui.MainWindow;
 
-public class Main implements AuctionEventListener {
+public class Main implements SniperListener {
 	@SuppressWarnings("unused") private Chat notToBeGCd;
 
 	private static final int ARG_HOSTNAME = 0;
@@ -47,16 +47,6 @@ public class Main implements AuctionEventListener {
 						   args[ARG_PASSWORD]), args[ARG_ITEM_ID]);
 	}
 
-	private void joinAuction(XMPPConnection connection,String itemId) throws XMPPException {
-		disconnectWhenUICloses(connection);
-
-		Chat chat = connection.getChatManager().createChat(
-		auctionId(itemId, connection),
-		new AuctionMessageTranslator(this));
-
-		chat.sendMessage(JOIN_COMMAND_FORMAT);
-    this.notToBeGCd = chat;
-	}
 
 	private void disconnectWhenUICloses(final XMPPConnection connection) {
 		ui.addWindowListener(new WindowAdapter() {
@@ -97,10 +87,28 @@ public class Main implements AuctionEventListener {
     });
   }
 
-  @Override
   public void currentPrice(int price, int increment) {
     // TODO 自動生成されたメソッド・スタブ
 
+  }
+
+  private void joinAuction(XMPPConnection connection,String itemId) throws XMPPException {
+    disconnectWhenUICloses(connection);
+
+    Chat chat = connection.getChatManager().createChat(
+    auctionId(itemId, connection),
+    new AuctionMessageTranslator(new AuctionSniper(this)));
+
+    this.notToBeGCd = chat;
+    chat.sendMessage(JOIN_COMMAND_FORMAT);
+  }
+
+  public void sniperLost() {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        ui.showStatus(MainWindow.STATUS_LOST);
+      }
+    });
   }
 }
 
