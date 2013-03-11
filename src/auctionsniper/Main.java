@@ -79,31 +79,28 @@ public class Main implements SniperListener {
 		return connection;
 	}
 
-  public void auctionClosed() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        ui.showStatus(MainWindow.STATUS_LOST);
-      }
-    });
-  }
-
-  public void currentPrice(int price, int increment) {
-    // TODO 自動生成されたメソッド・スタブ
-
-  }
-
   private void joinAuction(XMPPConnection connection,String itemId)
       throws XMPPException
       {
     disconnectWhenUICloses(connection);
 
-    Chat chat = connection.getChatManager().createChat(
-        auctionId(itemId, connection),
-        new AuctionMessageTranslator(new AuctionSniper(null, this)));
+    final Chat chat =
+        connection.getChatManager().createChat(auctionId(itemId, connection), null);
+      this.notToBeGCd = chat;
 
-    this.notToBeGCd = chat;
-    chat.sendMessage(JOIN_COMMAND_FORMAT);
+  Auction auction = new Auction() {
+    public void bid(int amount) {
+      try {
+        chat.sendMessage(String.format(BID_COMMAND_FORMAT, amount));
+      }catch (XMPPException e) {
+        e.printStackTrace();
       }
+    }
+  };
+  chat.addMessageListener(
+      new AuctionMessageTranslator(new AuctionSniper(auction, this)));
+    chat.sendMessage(JOIN_COMMAND_FORMAT);
+  }
 
   public void sniperLost() {
     SwingUtilities.invokeLater(new Runnable() {
@@ -113,10 +110,11 @@ public class Main implements SniperListener {
     });
   }
 
-  @Override
   public void sniperBidding() {
-    // TODO 自動生成されたメソッド・スタブ
-
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        ui.showStatus(MainWindow.STATUS_BIDDING);
+      }
+    });
   }
 }
-

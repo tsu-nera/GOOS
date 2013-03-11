@@ -1,15 +1,8 @@
 package test.endtoend.auctionsniper;
 
-//import static auctionsniper.ui.SnipersTableModel.textFor;
-import static org.hamcrest.Matchers.containsString;
 import static test.endtoend.auctionsniper.FakeAuctionServer.XMPP_HOSTNAME;
 
-import java.io.IOException;
-
-import javax.swing.SwingUtilities;
-
 import auctionsniper.Main;
-import auctionsniper.SniperState;
 import auctionsniper.ui.MainWindow;
 
 public class ApplicationRunner {
@@ -45,7 +38,7 @@ public class ApplicationRunner {
 		}
 	}
 
-	public void hasShoownSniperIsBidding() {
+	public void hasShownSniperIsBidding() {
 		driver.showSniperStatus(MainWindow.STATUS_BIDDING);
 	}
 
