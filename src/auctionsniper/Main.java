@@ -18,7 +18,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import auctionsniper.ui.MainWindow;
 
-public class Main implements SniperListener {
+public class Main { //SniperListenerは実装していない p137
   @SuppressWarnings("unused") private Chat notToBeGCd;
 
   private static final int ARG_HOSTNAME = 0;
@@ -79,37 +79,36 @@ public class Main implements SniperListener {
     return connection;
       }
 
-  public void sniperLost() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        ui.showStatus(MainWindow.STATUS_LOST);
-      }
-    });
-  }
+//  public void sniperLost() {
+//    SwingUtilities.invokeLater(new Runnable() {
+//      public void run() {
+//        ui.showStatus(MainWindow.STATUS_LOST);
+//      }
+//    });
+//  }
+//
+//  public void sniperBidding() {
+//    SwingUtilities.invokeLater(new Runnable() {
+//      public void run() {
+//        ui.showStatus(MainWindow.STATUS_BIDDING);
+//      }
+//    });
+//  }
 
-  public void sniperBidding() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        ui.showStatus(MainWindow.STATUS_BIDDING);
-      }
-    });
-  }
 
-
-  private void joinAuction(XMPPConnection connection,String itemId)
-      throws XMPPException
-      {
+  private void joinAuction(XMPPConnection connection,String itemId) {
     disconnectWhenUICloses(connection);
-
     final Chat chat =
         connection.getChatManager().createChat(auctionId(itemId, connection), null);
     this.notToBeGCd = chat;
 
     Auction auction = new XMPPAuction(chat);
     chat.addMessageListener(
-        new AuctionMessageTranslator(new AuctionSniper(auction, this)));
-    chat.sendMessage(JOIN_COMMAND_FORMAT);
-      }
+        new AuctionMessageTranslator(
+//            connection.getUser(),  //これはp147で初めて追加されているぞ？
+            new AuctionSniper(auction, new SniperStateDisplayer())));
+    auction.join();
+  }
 
   public class XMPPAuction implements Auction {
     private final Chat chat;
@@ -123,7 +122,7 @@ public class Main implements SniperListener {
     }
 
     public void join() {
-      sendMessage(BID_COMMAND_FORMAT);
+      sendMessage(JOIN_COMMAND_FORMAT);
     }
 
     private void sendMessage(final String message) {
@@ -133,8 +132,30 @@ public class Main implements SniperListener {
         e.printStackTrace();
       }
     }
-
-
   }
 
+  public class SniperStateDisplayer implements SniperListener {
+
+    @Override
+    public void sniperBidding() {
+      showStatus(MainWindow.STATUS_BIDDING);
+    }
+
+    @Override
+    public void sniperLost() {
+      showStatus(MainWindow.STATUS_LOST);
+    }
+
+    @Override
+    public void sniperWinning() {
+      showStatus(MainWindow.STATUS_WINNING);
+
+    }
+
+    private void showStatus(final String status) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() { ui.showStatus(status);  }
+      });
+    }
+  }
 }

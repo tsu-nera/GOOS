@@ -53,10 +53,11 @@ public class FakeAuctionServer{
 		return itemId;
 	}
 
-	public void reportPrice(int price, int incriment, String bidder) throws XMPPException {
+	public void reportPrice(int price, int increment, String bidder) throws XMPPException {
 		currentChat.sendMessage(
-				String.format("SOLVersion: 1.1; Event: PRICE; CurrentPrice: %d; "
-						+ "Increment: %d; Bidder: %s;", price, incriment, bidder));
+				String.format("SOLVersion: 1.1; Event: PRICE; "
+						+ " CurrentPrice: %d; Increment: %d; Bidder: %s;",
+						price, increment, bidder));
 	}
 
 	public void announceClosed() throws XMPPException {
@@ -85,17 +86,19 @@ public class FakeAuctionServer{
 	}
 
   //	スナイパーから「参加」リクエストを受信したか
-  public void hasRecievedJoinRequestFrom(String sniperId) throws InterruptedException {
-    recievesAMessageMatching(sniperId, equalTo(Main.JOIN_COMMAND_FORMAT));
-  }
+	public void hasRecievedJoinRequestFrom(String sniperId)
+	    throws InterruptedException
+	    {
+	      recievesAMessageMatching(sniperId, equalTo(Main.JOIN_COMMAND_FORMAT));
+	    }
 
-  // 「入札」を受信したか
-  public void hasRecievedBid(int bid, String sniperId)
-      throws InterruptedException
-      {
-    recievesAMessageMatching(sniperId,
-        equalTo(String.format(Main.BID_COMMAND_FORMAT, bid)));
-  }
+	// 「入札」を受信したか
+	public void hasRecievedBid(int bid, String sniperId)
+	    throws InterruptedException
+	    {
+	      recievesAMessageMatching(sniperId,
+	      equalTo(String.format(Main.BID_COMMAND_FORMAT, bid)));
+	    }
 
   private void recievesAMessageMatching(
       String sniperId, Matcher<? super String> messageMatcher )
