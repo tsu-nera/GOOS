@@ -105,7 +105,7 @@ public class Main { //SniperListenerは実装していない p137
     Auction auction = new XMPPAuction(chat);
     chat.addMessageListener(
         new AuctionMessageTranslator(
-//            connection.getUser(),  //これはp147で初めて追加されているぞ？
+            connection.getUser(),  //これはp147で初めて追加されているぞ？
             new AuctionSniper(auction, new SniperStateDisplayer())));
     auction.join();
   }
