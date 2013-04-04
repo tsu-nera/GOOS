@@ -22,6 +22,8 @@ public class AuctionSniperTest {
 
   private final States sniperState = context.states("sniper");
 
+//  private boolean isWinnging = false;
+
   @Test public void //p128
   reportsLostWhenAuctionClosed() {
     context.checking(new Expectations() {{

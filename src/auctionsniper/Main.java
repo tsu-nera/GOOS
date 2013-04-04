@@ -18,7 +18,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import auctionsniper.ui.MainWindow;
 
-public class Main { //SniperListenerは実装していない p137
+public class Main { //SniperListener���茖�������� p137
   @SuppressWarnings("unused") private Chat notToBeGCd;
 
   private static final int ARG_HOSTNAME = 0;
@@ -105,7 +105,7 @@ public class Main { //SniperListenerは実装していない p137
     Auction auction = new XMPPAuction(chat);
     chat.addMessageListener(
         new AuctionMessageTranslator(
-            connection.getUser(),  //これはp147で初めて追加されているぞ？
+            connection.getUser(),  //�����147�у����菴遵����������鐚�
             new AuctionSniper(auction, new SniperStateDisplayer())));
     auction.join();
   }
@@ -149,7 +149,11 @@ public class Main { //SniperListenerは実装していない p137
     @Override
     public void sniperWinning() {
       showStatus(MainWindow.STATUS_WINNING);
+    }
 
+    @Override
+    public void sniperWon() {
+      showStatus(MainWindow.STATUS_WON);
     }
 
     private void showStatus(final String status) {
